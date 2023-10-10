@@ -6,6 +6,9 @@ public class Users {
         Scanner scanner = new Scanner(System.in);
         System.out.println("*****GESTION DE REGISTROS*****");
 
+        String error_null = "No se admiten datos vacios o nulos";
+        String error_search = "No se encontraron registros";
+
         boolean inicio = true;
 
         while (inicio) {
@@ -48,11 +51,12 @@ public class Users {
                                 cellphone == null || cellphone.equals("") || cellphone.length() < 0 || address == null || address.equals("") ||
                                 address.length() < 0){
 
-                            System.out.println("No se admiten datos vacios o nulos");
+                            System.out.println(error_null);
                         }else {
 
                             BD bd = new BD();
-                            BD.Insert(document, name, cellphone, address); //
+                            Customers customers = new Customers(document, name, cellphone, address);
+                            BD.Insert(customers); //
                         }
                     }
                         break;
@@ -75,10 +79,11 @@ public class Users {
                                     cellphone == null || cellphone.equals("") || cellphone.length() < 0 || address == null || address.equals("") ||
                                     address.length() < 0) {
 
-                                System.out.println("No se admiten datos vacios o nulos");
+                                System.out.println(error_null);
                             }else {
                                 BD bd = new BD();
-                                BD.Edit(document, name, cellphone, address);
+                                Customers customers = new Customers(document, name, cellphone, address);
+                                BD.Edit(customers);
                             }
 
                             break;
@@ -96,7 +101,6 @@ public class Users {
                             break;
 
                         case 4:
-                            System.out.println("Estos son todos los clientes registrados: ");
 
                             bd = new BD();
                             BD.Search();

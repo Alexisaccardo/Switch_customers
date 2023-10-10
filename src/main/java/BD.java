@@ -4,9 +4,7 @@ public class BD {
     public BD() {
     }
 
-
-
-    public static void Insert(String document, String name, String cellphone, String address) {
+    public static void Insert(Customers customers) {
 
         String error_register = "No se pudo registrar el cliente.";
 
@@ -27,10 +25,10 @@ public class BD {
 
             // Preparar la sentencia
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, document);
-            preparedStatement.setString(2, name);
-            preparedStatement.setString(3, cellphone);
-            preparedStatement.setString(4, address);
+            preparedStatement.setString(1, customers.getDocument());
+            preparedStatement.setString(2, customers.getName());
+            preparedStatement.setString(3, customers.getCellphone());
+            preparedStatement.setString(4, customers.getAddress());
 
             // Ejecutar la sentencia
             int filasAfectadas = preparedStatement.executeUpdate();
@@ -50,7 +48,7 @@ public class BD {
         }
     }
 
-    public static void Edit(String document, String name, String cellphone, String address) throws ClassNotFoundException, SQLException {
+    public static void Edit(Customers customers) throws ClassNotFoundException, SQLException {
 
         String error_edit = "No se encontro un cliente registrado con el documento ingresado";
 
@@ -66,10 +64,10 @@ public class BD {
 
         String consulta = "UPDATE customer SET name = ?, cellphone = ?, address = ? WHERE document = ?";
         PreparedStatement preparedStatement = connection2.prepareStatement(consulta);
-        preparedStatement.setString(1, name);
-        preparedStatement.setString(2, cellphone);
-        preparedStatement.setString(3, address);
-        preparedStatement.setString(4, document);
+        preparedStatement.setString(1, customers.getName());
+        preparedStatement.setString(2, customers.getCellphone());
+        preparedStatement.setString(3, customers.getAddress());
+        preparedStatement.setString(4, customers.getDocument());
 
         int filasActualizadas = preparedStatement.executeUpdate();
         if (filasActualizadas > 0) {
@@ -126,6 +124,8 @@ public class BD {
 
     public static void Search() throws ClassNotFoundException, SQLException {
 
+        String error_search = "No se encontraron registros";
+
         String driver2 = "com.mysql.cj.jdbc.Driver";
         String url2 = "jdbc:mysql://localhost:3306/customers";
         String username2 = "root";
@@ -145,11 +145,16 @@ public class BD {
             String cellphone = resultSet2.getString("cellphone");
             String address = resultSet2.getString("address");
 
+            System.out.println("Estos son todos los clientes registrados: ");
             System.out.println("Este es el documento del cliente: " + document + " Con nombre: " + name + " Celular: " + cellphone + " su direccion: " + address);
+
         }
+
     }
 
     public static void Delete(String document) throws ClassNotFoundException, SQLException {
+
+        String error_delete = "No se encontro un cliente con el documento ingresado";
 
         String driver2 = "com.mysql.cj.jdbc.Driver";
         String url2 = "jdbc:mysql://localhost:3306/customers";
@@ -162,9 +167,14 @@ public class BD {
         String sentenciaSQL = "DELETE FROM customer WHERE document = ?";
         PreparedStatement prepareStatement = connection2.prepareStatement(sentenciaSQL);
         prepareStatement.setString(1, document);
-        prepareStatement.executeUpdate();
 
-        System.out.println("Cliente eliminado de manera correcta");
+        int files = prepareStatement.executeUpdate();
+
+        if (files > 0) {
+            System.out.println("Cliente eliminado de manera correcta");
+        }else{
+            System.out.println(error_delete);
+        }
     }
 }
 
